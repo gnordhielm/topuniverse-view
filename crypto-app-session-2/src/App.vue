@@ -1,31 +1,37 @@
 <script setup>
+import Coin from "./components/Coin.vue";
 import { ref, watchEffect } from "vue";
 
-let limit = ref(10);
+let limit = ref(12);
 let coins = ref([]);
+let activeCoinId = ref(null);
 
 watchEffect(async () => {
   let url = `https://api.coinstats.app/public/v1/coins?skip=0&limit=${limit.value}&currency=EUR`;
 
   let rawResult = await window.fetch(url);
   let resultJson = await rawResult.json();
-
   coins.value = resultJson.coins;
 });
+
+let onSetActiveCoin = (coinId) => {
+  activeCoinId.value = coinId;
+};
 </script>
 
 <template>
   <div>
-    <h1>Coins</h1>
-    <hr />
-    <button v-on:click="limit--">-</button>
-    <code>{{ limit }}</code>
-    <button v-on:click="limit++">+</button>
-    <hr />
-    <div v-for="coin in coins" :key="coin.id" class="coin">
-      <h2>{{ coin.name }} ({{ coin.symbol }})</h2>
-      <p>{{ coin.price }}</p>
-    </div>
+    <h1 class="text-2xl text-blue-600 mb-6 text-center">Coins</h1>
+    <pre>{{ activeCoinId }}</pre>
+    <ul>
+      <Coin
+        v-for="coin in coins"
+        v-bind:key="coin.id"
+        v-bind:coin="coin"
+        v-bind:selectedCoinId="activeCoinId"
+        v-on:onSelectCoin="onSetActiveCoin"
+      />
+    </ul>
   </div>
 </template>
 
