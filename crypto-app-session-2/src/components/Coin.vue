@@ -5,6 +5,9 @@ let props = defineProps(["coin", "selectedCoinId"]);
 <template>
   <li
     class="mx-auto w-60 m-2 py-2 px-4 border rounded-lg flex gap-4 hover:border-blue-300"
+    :class="{
+      'border-blue-500': props.selectedCoinId === props.coin.id,
+    }"
     v-on:click="$emit('onSelectCoin', props.coin.id)"
   >
     <img class="w-12 h-12" v-bind:src="props.coin.icon" />
